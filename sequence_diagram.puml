@@ -1,0 +1,56 @@
+@startuml chatroom_p2p_login
+
+skinparam sequenceMessageAlign direction
+skinparam backgroundColor lightgray
+
+participant "<&person> Client 3" as client3
+participant "<&person> Client 2" as client2
+participant "<&person> Client 1" as client1
+participant "<&monitor> Server" as server
+database "Users" as users
+
+client1 -> server : connect()
+server -->> client1 : accept()
+server -> client1 : send(request_choice)
+
+note right of client3 
+    NB! We have omitted
+    writing the recv() and
+    recvfrom() methods from
+    the sequence diagram to
+    save space
+end note
+
+client1 -->> server : send(choice)
+server -> client1 : send(request_username)
+client1 -->> server : send(username)
+server -> users : validate(username)
+users -->> server : confirm(username)
+server -> client1 : send(request_password)
+client1 -->> server : sha256(password)\nsend(password)
+server -> users : validate(password)
+users -->> server : confirm(password)
+server ->> client1 : send(confirm_user)\nsend(welcome_message)
+
+note right of client3
+    NB! We act as if Client 2
+    and Client 3 are already
+    connected to the server
+end note
+
+server ->> client1 : broadcast_list_of_clients()
+server ->> client2
+server ->> client3
+
+||25||
+
+client1 ->> server : send(msg)
+server -->> client2 : broadcast(msg)
+server -->> client3
+
+||25||
+
+client1 ->> client2 : sendto(msg)
+client3 ->> client1 : sendto(msg)
+
+@enduml
