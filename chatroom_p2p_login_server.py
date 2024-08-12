@@ -1,10 +1,9 @@
-import socket
-import select
 import json
+import logging
+import select
+import socket
 import time
 
-# Basic logging configuration
-import logging
 
 logging.basicConfig(
     format="\r[%(levelname)s: line %(lineno)d] %(message)s", level=logging.INFO

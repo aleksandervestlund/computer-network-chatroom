@@ -1,9 +1,9 @@
+import hashlib
 import json
 import logging
-import socket
 import select
+import socket
 import sys
-import hashlib
 
 
 logging.basicConfig(
