@@ -1,8 +1,10 @@
 import json
 import logging
+import os
 import select
 import socket
 import time
+from pathlib import Path
 
 
 logging.basicConfig(
@@ -145,10 +147,13 @@ class ChatRoomP2PServer:
 
                             password = sockfd.recv(self.receive_buffer_size)
                             password = password.decode().strip()
+                            path = os.path.join(
+                                Path(__file__).parent.parent.resolve(),
+                                "div",
+                                "users.json",
+                            )
 
-                            with open(
-                                "users.json", "w", encoding="utf-8"
-                            ) as file:
+                            with open(path, "w", encoding="utf-8") as file:
                                 dict_users.update({username: password})
                                 json.dump(dict_users, file)
 
